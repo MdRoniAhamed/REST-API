@@ -1,1 +1,19 @@
 API ==> Application Programming Interface.
+REST ==> Representational State Transfer
+REST ==> It is an architectural guideline to develop web API. 
+REST API / RESTFull API ==> The API which is developed using REST is known  as REST API.
+
+CRUD Operations ==> 
+	 Create : POST      => Creating/posting/inserting data.
+	 Read   : GET       => Reading/Getting/retrieving Data.
+	 Update : PUT,PATCH => Updating Data 
+							Complete Update - PUT 
+							Partial Update  - PATCH
+	 Delete : DELETE	=> Deleting Data 
+	 
+
+http://geekyshows.com/api/students
+	   ------1------- -2- --- 3 ---
+	   1: Base URL
+	   2: Naming Convention
+	   3: Resource of API or End-Point
