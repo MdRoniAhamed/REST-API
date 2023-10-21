@@ -17,3 +17,8 @@ http://geekyshows.com/api/students
 	   1: Base URL
 	   2: Naming Convention
 	   3: Resource of API or End-Point
+
+
+class:
+======> 
+Serializer and Serializertion in Django REST Framework (Hindi): 33.22 seconds.
