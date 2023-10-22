@@ -1,0 +1,65 @@
+serializers: 
+Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes that can then be easily rendered into JSON, XML or other content types. Serializers also provide deserialization, allowing parsed data to be converted back into complex types, after first validating the incoming data.
+
+The serializers in REST framework work very similarly to Django's Form and ModelForm classes. We provide a Serializer class which gives you a powerful, generic way to control the output of your responses, as well as a ModelSerializer class which provides a useful shortcut for creating serializers that deal with model instances and querysets.
+
+
+models.py: => 
+
+from django.db import models
+
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+    roll = models.IntegerField()
+    city = models.CharField(max_length=100)
+	
+	
+serializers.py => 
+
+from rest_framework import serializers 
+
+class StudentSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=100)
+    roll = serializers.IntegerField()
+    city = serializers.CharField(max_length=100)
+	
+
+views.py => 
+
+from django.shortcuts import render,HttpResponse
+from .models import Student
+from .serializers import StudentSerializer
+from rest_framework.renderers import JSONRenderer
+from django.http import JsonResponse
+
+#Model Object -> single Student Data
+
+def student_details(request, pk):
+    stu = Student.objects.get(id=pk)
+    serializer = StudentSerializer(stu)
+    # json_data = JSONRenderer().render(serializer.data)
+    # return HttpResponse(json_data, content_type='application/json')
+    return JsonResponse(serializer.data) # json data is dict data
+
+# Query Set -> All students Data
+
+def student_list(request):
+    stu = Student.objects.all()
+    serializer = StudentSerializer(stu, many = True)
+    # json_data = JSONRenderer().render(serializer.data)
+    # return HttpResponse(json_data, content_type='application/json')
+    return JsonResponse(serializer.data, safe=False) # Json data is not dict data 
+
+
+urls.py ==> 
+
+from django.contrib import admin
+from django.urls import path
+from api import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('stuinfo/<int:pk>/',views.student_details),
+    path('stuinfo/',views.student_list),
+]

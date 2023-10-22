@@ -18,7 +18,10 @@ http://geekyshows.com/api/students
 	   2: Naming Convention
 	   3: Resource of API or End-Point
 
-
+serializers , 
+Deserializers,
 class:
 ======> 
-Serializer and Serializertion in Django REST Framework (Hindi): 33.22 seconds.
+Serializer and Serializertion in Django REST Framework (Hindi): Completed.
+Serializer Fields and Core Arguments in Django REST Framework (Hindi): Completed
+DeSerialization and Insert Data Django REST Framework (Hindi): Completed
