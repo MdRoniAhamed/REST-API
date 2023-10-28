@@ -25,3 +25,4 @@ class:
 Serializer and Serializertion in Django REST Framework (Hindi): Completed.
 Serializer Fields and Core Arguments in Django REST Framework (Hindi): Completed
 DeSerialization and Insert Data Django REST Framework (Hindi): Completed
+CRUD API using Function Based View and Class Based View in Django REST Framework (Hindi): 1 hour : 2 minutes video watched. 

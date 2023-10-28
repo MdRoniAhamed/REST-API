@@ -6,7 +6,7 @@ from .serializers import StudentSerializer
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
+@csrf_exempt  # This decorator marks a view as being exempt from the protection ensured by the middleware
 def student_create(request):
     if request.method == 'POST':
         json_data = request.body
@@ -16,7 +16,7 @@ def student_create(request):
 
         if serializer.is_valid():
             serializer.save()
-            res = {'mes':'Data Created!'}
+            res = {'msg':'Data Created!'}
             json_data = JSONRenderer().render(res)
             return HttpResponse(json_data, content_type='application/json')
         json_data = JSONRenderer().render(serializer.errors)

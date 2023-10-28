@@ -1,0 +1,72 @@
+Deserializers:
+While serializers primarily handle data serialization, deserializers perform the reverse process. Deserializers take data in a format like JSON and convert it into complex data types, such as Django model instances, after validating and parsing the incoming data.
+
+models.py :> 
+
+from django.db import models
+
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+    roll = models.IntegerField()
+    city = models.CharField(max_length=100)
+    
+	
+serializers :>
+
+from rest_framework import serializers
+from .models import Student
+
+class StudentSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    roll = serializers.IntegerField()
+    city = serializers.CharField(max_length=100)
+    
+    def create(self, validate_data):
+        return Student.objects.create(**validate_data)
+		
+		
+views.py :> 
+
+from django.shortcuts import render 
+from rest_framework.renderers import JSONRenderer
+import io 
+from rest_framework.parsers import JSONParser
+from .serializers import StudentSerializer
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  # This decorator marks a view as being exempt from the protection ensured by the middleware
+def student_create(request):
+    if request.method == 'POST':
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        serializer = StudentSerializer(data=python_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            res = {'mes':'Data Created!'}
+            json_data = JSONRenderer().render(res)
+            return HttpResponse(json_data, content_type='application/json')
+        json_data = JSONRenderer().render(serializer.errors)
+        return HttpResponse(json_data, content_type='application/json')
+		
+		
+		
+myapp.py :> 
+
+import requests 
+import json
+
+URL = "http://127.0.0.1:8000/stu_create/"
+
+data = {
+    'name' : 'Roni',
+    'roll' : 105,
+    'city' : 'Khulna',
+}
+
+json_data = json.dumps(data)
+r = requests.post(url=URL, data = json_data)
+data = r.json()
+print(data)
