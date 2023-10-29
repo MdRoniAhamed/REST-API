@@ -1,0 +1,85 @@
+								Validation:
+							==================
+							
+3 type of validation :
+	1. Field Level Validation
+	2. Object Level Validation
+	3. Validators
+	
+	
+								Field level Validation:
+								=======================
+We can specify custom field-level validation by adding validate_fieldName methods to your Serializer subclass.
+These are similar to the clean_fieldName methods on Djanog forms.
+validate_fieldName methods should return the validated value or raise a serializers.ValidationError 
+syntas:- def validate_fieldname(self, value)
+Example:- def validate_roll(self, value)
+Where, value si the field value that requires validation. 								
+
+This method is automatically invoked when is_valid() method is called. 
+
+
+								Object level Validation:
+								========================
+When we need to do validation that requires access to multiple fields we do object level validation by adding a method called validate() to Serializer subclass.
+
+It raises serializers.ValidationError if necessary, or just return the validated values. 
+Syntax:- def validate(self,data)
+example:- df validate(self, data)
+where, data is dictionary of field values
+								
+								    Validators:
+								========================
+
+Most fo the time you're dealing with validation in REST framework you'll simply be relying on the default field validation, or writing explicit validation methods on serrializer or filed classes. 
+
+However, sometimes you'll want to place your validation logic into reusable components, so that it can easily be reused throughout your codebase. This can be achieved by using validator functions and validator classes. 
+
+REST framework the validation is performed entirely on the serializer class. This is advantageous for the following reasons:
+
+1. It introduces a proper separation of concerns, making your code behavior more obvious. 
+2. It is easy to switch between using shortcut ModelSerializer classes and using expliicit Serializer classes. any Validation behavior being used for ModelSerializer is simple to replicate. 
+3. Printing the repr() of a serializer instance will show you exactly what validation rules it applies. There's no extra hidden validation behavior being called on the model instance. 
+4. When you're using ModelSerializer all of this si handled automatically for you. If you want to drop down to using Serializer classes instead, then you need to define the validation rules explicitly. 
+
+
+Example: 
+
+serializers.py ==> 
+
+from rest_framework import serializers
+from .models import Student
+
+# Validate 
+def start_with_r(value):
+    if value.lower()[0] != 'r':
+        raise serializers.ValidationError("Name Should be start with R")
+
+class StudentSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100, validators=[start_with_r])
+    roll = serializers.IntegerField()
+    city = serializers.CharField(max_length=100)
+    def create(self, validated_data):
+        return Student.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name',instance.name)
+        instance.roll = validated_data.get('roll',instance.roll)
+        instance.city = validated_data.get('city',instance.city)
+        instance.save()
+        return instance
+    
+    # Fields level validation
+
+    def validate_roll(self, value):
+        if value >= 200:
+            raise serializers.ValidationError('Seat full!')
+        return value 
+    
+    # Object level validation
+    def validate(self, data):
+        nm = data.get('name')
+        ct = data.get('city')
+        if nm.lower() == 'roni' and ct.lower() != 'mymensingh':
+            raise serializers.ValidationError("City must be Mymensingh")
+        return data 

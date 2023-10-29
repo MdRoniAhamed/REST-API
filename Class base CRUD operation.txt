@@ -1,0 +1,119 @@
+CRUD Operation Class base view:
+CRUD Operations ==> 
+	 Create : POST      => Creating/posting/inserting data.
+	 Read   : GET       => Reading/Getting/retrieving Data.
+	 Update : PUT,PATCH => Updating Data 
+							Complete Update - PUT 
+							Partial Update  - PATCH
+	 Delete : DELETE	=> Deleting Data 
+	 
+
+models.py :
+
+from django.db import models
+
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+    roll = models.IntegerField()
+    city = models.CharField(max_length=100)
+	
+
+serializers.py :
+
+from rest_framework import serializers
+from .models import Student
+class StudentSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    roll = serializers.IntegerField()
+    city = serializers.CharField(max_length=100)
+    def create(self, validated_data):
+        return Student.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name',instance.name)
+        instance.roll = validated_data.get('roll',instance.roll)
+        instance.city = validated_data.get('city',instance.city)
+        instance.save()
+        return instance
+		
+		
+
+views.py  :
+
+from django.shortcuts import render
+from .models import Student
+import io 
+from rest_framework.parsers import JSONParser 
+from .serializers import StudentSerializer
+from rest_framework.renderers import JSONRenderer
+from django.http import HttpResponse,JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator 
+from django.views import View
+
+@method_decorator(csrf_exempt,name='dispatch')
+class StudentApi(View):
+    def get(self, request, *args, **kwargs):
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        id = python_data.get('id', None)
+        if id is not None:
+            stu = Student.objects.get(id=id)
+            serializer = StudentSerializer(stu)
+        else:
+            stu = Student.objects.all()
+            serializer = StudentSerializer(stu,many=True)
+        json_data = JSONRenderer().render(serializer.data)
+        return HttpResponse(json_data,content_type='application/json')
+
+    def post(self, request, *args, **kwargs):
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        serializer = StudentSerializer(data = python_data)
+        if serializer.is_valid():
+            serializer.save()
+            res = {'msg':'created!'}
+            json_data = JSONRenderer().render(res)
+            return JsonResponse(res, content_type='application/json')
+        json_data = JSONRenderer().render(serializer.errors)
+        return HttpResponse(json_data,content_type='application/json')
+    
+    def put(self, request, *args, **kwargs):
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        id = python_data.get('id')
+        stu = Student.objects.get(id=id)
+        serializer = StudentSerializer(stu,data=python_data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            res = {'msg':'Data Updated'}
+            return JsonResponse(res,content_type='application/json')
+        return JsonResponse(serializer.errors, content_type='application/json')
+    
+    def delete(self, request, *args, **kwargs):
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        id = python_data.get('id')
+        stu = Student.objects.get(id=id)
+        stu.delete()
+        res = {'msg':'Data Deleted'}
+        return JsonResponse(res, content_type='application/json')
+
+
+
+urls.py  :
+
+
+from django.contrib import admin
+from api import views
+from django.urls import path
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('student_api/',views.StudentApi.as_view()),
+]
+
