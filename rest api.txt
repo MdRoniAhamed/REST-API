@@ -28,3 +28,4 @@ DeSerialization and Insert Data Django REST Framework (Hindi): Completed
 CRUD API using Function Based View and Class Based View in Django REST Framework (Hindi): completed
 Validation in Django REST Framework (Hindi): completed 
 Model Serializer in Django REST Framework (Hindi) : completed.
+Function Based API View in Django REST Framework (Hindi) : completed.
