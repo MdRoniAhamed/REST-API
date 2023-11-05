@@ -29,3 +29,12 @@ CRUD API using Function Based View and Class Based View in Django REST Framework
 Validation in Django REST Framework (Hindi): completed 
 Model Serializer in Django REST Framework (Hindi) : completed.
 Function Based API View in Django REST Framework (Hindi) : completed.
+Class Based API View in Django REST Framework (Hindi) : completed.
+Generic API View and Mixins in Django REST Framework (Hindi): 
+
+
+
+
+
+															APIView example:
+														========================

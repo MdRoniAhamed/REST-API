@@ -5,6 +5,6 @@ from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('product_api/',views.product_api),
-    path('product_api/<int:pk>/',views.product_api),
+    path('product_api/',views.product_api.as_view()),
+    path('product_api/<int:pk>/',views.product_api.as_view()),
 ]

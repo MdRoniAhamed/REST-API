@@ -1,0 +1,75 @@
+																Mixins:
+														========================
+One of the big wins of using class-based views is that it allows us to easily compose reusable bits of behaviour.
+The create/retrieve/update/delete/ operations that we've been using so far are going to be pretty similar for any model-backed API views we create.
+ 
+Those bits of commom behaviour are implemented in REST framework's mixin classes.
+
+The mixin classes provide the actions that are used to provide the basic view behavior.
+
+Note that the mixin classes provide action methods rather than defining the handler methods, such as get() and post(), directly. This allows for more flexible composition of behavior.
+
+The mixin classes can be imported :  from rest_framework.mixins 
+
+*ListModelMixin
+*CreateModelMixin
+*RetrieveModelMixin
+*UpdateModelMixin
+*DestroyModelMixin
+
+															ListModelMixin:
+														========================
+It provides a list(request, *args, *kwargs) method, that implements listing a queryset. 
+
+If the queryset is populated, this returns a 200 OK response, with a serialized representaion of the queryset as the body of the response. The response data may optionally be paginated
+
+from rest_framework.mixins import ListModelMixin
+from rest_framework.generics import GenericAPIView 
+
+
+															CreateModelMixin:
+														========================
+
+It provides a create(request, *args, **kwargs)method, that implements creating and saving a new model instance.
+
+If an object is created this returns a 201 Created response, with a serialized representation of the object as the body of the response. If the representation contains a key named url, then the location header of the response will be populated with that value.
+
+If the request data provided for creating the object was invalid, a 400 Bad request response will be returned, with the error details as the body of the response. 
+
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.generics import GenericAPIView
+
+															RetrieveModelMixin:
+														========================
+
+It provides retrieve(request, *args, **kwargs) method, that implements returning an existing model instance in a  response. 
+
+If an object can be retrieved this returns a 200k OK response, with a serialized representation of the object as the body of teh response. Otherwise it will return a 404 Not Found. 
+
+from rest_framework.mixin import RetrieveModelMixin
+from rest_framework.generics import GenericAPIView
+
+															UpdateModelMixin:
+														========================
+
+It provides a update(request, *args, **kwargs) method, that implements updating and saving an existing model  instance. 
+
+It also provides a partial_update(request, *args, **kwargs) method, which is similar to update method, except that all fields for the update will be optional. This allows support for HTTP PATCH requests.
+
+If an object is updated this returns a 200 OK response, with a serialized
+representation fo the object as the body of the response. 
+
+If the request data provided for updating thh eobject was invalid, a 400 Bad request response will be returned, with the error details as the body of the response. 
+
+from rest_framework.mixins impport UpdateModelMixin
+from rest_framework.generics import GenericAPIView 
+
+															DestroyModelMixin:
+														========================
+
+It provides a destroy(request, *args, **kwargs) method, that implements deletion of an existing model instance. 
+If an object is deleted this returns a 204 No Content response, otherwise it will return a 404 Not Found.
+
+from rest_framework.mixins import DestroyModelMixin
+from rest_framework.generics import GenericAPIView 
+
