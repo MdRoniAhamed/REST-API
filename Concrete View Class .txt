@@ -1,0 +1,176 @@
+														  Concrete View Class:
+														========================
+
+The following classes are the concrete generic views. 
+
+If you're using generic views this is normally the level you'll be working at unless you need heavily customized behavior. 
+
+The view classes can be imported from rest_framework.generics.
+
+*ListAPIView
+*CreateAPIView	
+*RetrieveAPIView
+*UpdateAPIView
+*DestroyAPIView
+*ListCreateAPIView
+*RetrieveUpdateAPIView
+*RetrieveDestroyAPIView
+*RetrieveUpdateDestroyAPIView
+
+															ListAPIView:
+														========================
+It is used for read-only endpoints to represent a collection of model instances. It provides a get method handler.
+
+Extends: GenericAPIView, ListModelMixin
+
+from rest_framework.generics import ListAPIView
+class StudentList(ListAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+
+															CreateAPIView:
+														========================
+
+It used for create-only endpoints. It provides a post method handler. 
+Extends: GenericAPIView, CreateModelMixin
+
+from rest_framework.generics import CreateAPIView
+class StudentList(CreateAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+	
+															RetrieveAPIView:
+														========================
+
+It is used for read-only endpoints to represent a single model instance. It provides a get method handler.
+Extends: GenericAPIView, RetrieveModelMixin
+
+from rest_framework.generics import RetrieveAPIView
+class StudentList(RetrieveAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+	
+															UpdateAPIView:
+														========================
+
+It is used for update-only endpoints for a single model instance. It provides put and patch method handlers.
+Extends: GenericAPIView, UpdateModelMixin 
+
+from rest_framework.generics import UpdateAPIView
+class StudentList(UpdateAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+	
+															DestroyAPIView:
+														========================
+
+It si used for delete-only endpoints for a single model instance. It provides a delete method handler. 
+Extends: GenericAPIView, DestroyModelMixin
+
+from rest_framework.generics import DestroyAPIView
+class StudentList(UpdateAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+
+															ListCreateAPIView:
+														========================
+
+It is used for read-write endpoints to represent a collection of model instances. It provides get and post method handlers.
+
+Extends: GenericAPIView, ListModelMixin, CreateModelMixin
+
+from rest_framework.generics import ListCreateAPIView
+class StudentList(ListCreateAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+
+
+
+															RetrieveUpdateAPIView:
+														========================
+
+It is used for read or update endpoints to represent a single model instance. It provides get, put and patch method handlers.
+
+Extends: GenericAPIView, RetrieveModelMixin, UpdateModelMixin
+
+from rest_framework.generics import RetrieveUpdateAPIView
+class StudentList(RetrieveUpdateAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+
+
+
+														RetrieveDestroyAPIView:
+														========================
+
+It is used for read or delete endpoints to represent a single model instance. It provides get, delete method handlers.
+
+Extends: GenericAPIView, RetrieveModelMixin, DestroyModelMixin
+
+from rest_framework.generics import RetrieveDestroyAPIView
+class StudentList(RetrieveDestroyAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+
+
+
+														RetrieveUpdateDestroyAPIView:
+														============================
+
+It is used for read-update-delete endpoints to represent a single model instance. It provides get, put and patch method handlers.
+
+Extends: GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+class StudentList(RetrieveUpdateDestroyAPIView):
+	queryset = Student.objects.all()
+	serializer_class = StudentSerializer
+	
+
+														All Concrete API Example:
+														============================
+
+
+
+views.py ==: 
+
+
+from .models import Product 
+from .serializers import ProductSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView,ListCreateAPIView,RetrieveUpdateAPIView, RetrieveDestroyAPIView, RetrieveUpdateDestroyAPIView
+
+class ProductList(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductCreate(CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductUpdate(UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductRetrieve(RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class ProductDestroy(DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class LCProduct(ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class RUProduct(RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class RDProduct(RetrieveDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+class RUDProduct(RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer

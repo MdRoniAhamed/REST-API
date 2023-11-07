@@ -1,0 +1,40 @@
+														SessionAuthentication:
+														===================
+
+This authentication scheme uses Django's default session backend for authentication. Session authentication is appropriate for AJAX clients that are running in the same session context as your website.
+
+If successfull authenticated, SessionAuthentication provides the following credentials. 
+
+request.user will be a Django User instance.
+
+request.auth will be None.
+
+Unauthenticated responses that are denied permission will result in an HTTP 403 Forbidden response. 
+
+If you're using an AJAX style API with SessionAuthentication, you'll need to make sure you include a valid CSRF token for any "unsafe" HTTP method calls, such as PUT, PATCH, POST or DELETE request. 
+
+
+
+															Example:
+														===================
+
+views.py ==:-> 
+
+
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import status
+from rest_framework import viewsets 
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly,DjangoModelPermissions,DjangoModelPermissionsOrAnonReadOnly
+
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    # permission_classes = [IsAdminUser]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]

@@ -1,0 +1,47 @@
+																BasicAuthentication :
+														====================================
+
+This  authentication scheme uses HTTP Basic Authentication, signed against a user's username and password.
+
+Basic authentication is generally only appropriate for testing.
+
+It successfully authenticated, BasicAuthentication provides the following credentials.
+
+* request.user will be a Django User instance.
+* request.auth will be None.
+
+Unauthenticated responses that are denied permission will result in an HTTP 401 Unauthorized response with an appropriate WWW-Authenticate header. For example: WWW-Authenticate: Basic realm="api"
+
+Note: If you use BasicAuthentication in production you must ensure that your API is only available over https.
+You should also ensure that your API clients will always re-request the username and password at login, and will never store those details to persistent storage.
+
+
+
+
+
+																 Import :
+														====================================
+
+from rest_framework.authentication import BasicAuthentication 
+from rest_framework.permissions import IsAuthenticated
+
+															example:
+														===================
+
+views.py ::==> 
+
+
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import status
+from rest_framework import viewsets 
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAdminUser]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]

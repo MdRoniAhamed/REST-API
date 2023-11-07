@@ -23,18 +23,38 @@ Deserializers,
 class:
 ======> 
 Serializer and Serializertion in Django REST Framework (Hindi): Completed.
+
 Serializer Fields and Core Arguments in Django REST Framework (Hindi): Completed
+
 DeSerialization and Insert Data Django REST Framework (Hindi): Completed
+
 CRUD API using Function Based View and Class Based View in Django REST Framework (Hindi): completed
+
 Validation in Django REST Framework (Hindi): completed 
+
 Model Serializer in Django REST Framework (Hindi) : completed.
+
 Function Based API View in Django REST Framework (Hindi) : completed.
+
 Class Based API View in Django REST Framework (Hindi) : completed.
-Generic API View and Mixins in Django REST Framework (Hindi): 
 
+Generic API View and Mixins in Django REST Framework (Hindi): Completed
 
+Concrete View Class in Django REST Framework : Completed.
 
+ViewSet in Django REST Framework : Completed.
 
+Model View Set and Ready Only Model View Set in Django REST Framework : completed.
+
+Basic Authentication and Permission Class in Django REST Framework : completed
+
+Session Authentication and Permission in Django REST Framework : completed.
+
+Custom Permission in Django REST Framework : Completed.
+
+Authentication and Permission in Function Based View in Django REST Framework : completed.
+
+Token Authentication in Django REST Framework : 32 minute dekse.
 
 															APIView example:
 														========================

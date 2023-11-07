@@ -1,0 +1,80 @@
+														  TokenAuthentication:
+														========================
+
+This authentication scheme uses a simple token-based HTTP Authentication scheme. Token Authentication is appropriate for client-server setups, such as native desktop and mobile clients.
+
+To use the TokenAuthentication scheme you'll need to configure the authentication classes to include TokenAuthentication, and additionally include 
+
+rest_framework.authtoken in your INSTALLED_APPS setting:
+
+INSTALLED_APPS = [
+	'rest_framework.authtoken'
+	]
+
+Note: Make sure to run manage.py migratre after changing your settings. The rest_framework.authtoken app provides Django database migrations.
+
+If successfully authenticated, TokenAuthentication provides the following credentials. 
+
+request.user will be a Django User instance.
+
+request.auth will be a rest_framework.authtoken.model.Token instance.
+
+Unauthenticated responses that are denied permission will result in an HTTP 401 Unauthenticated response with an appropriate WWW-Authenticate header. For example: 
+The http command lise tool may be useful for testing token authenticated APIs. For example:
+http http://127.0.0.1:8000/sudetapi/'Authorization: Token 9933b08199c62bcf9418ad846dd0e4bbdfc6ee4b'
+
+Note: If you use TokenAuthentication in production you must ensure that your API is only available over https. 
+
+															Generate Token:
+														========================
+
+* Using Admin Application 
+* Using Django manage.py command
+	python manage.py drf_create_token<username> - This command will return API Token for the given user or Creates a Token if token doesn't exist for user.
+* By exposing an API endpoint 
+* Using Signals
+
+															How Client can Ask/ Create Token:
+														=======================================
+
+When using TokenAuthentication, you may want to provide a mechanism for clients to obtain a token given the username and password.
+Rest framework provides a built-in view to provide this behavior. To use it, add the obtain_auth_token view to your URLconf:
+
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+	path('gettoken/',obtain_auth_token) 
+	]
+The obtain_auth_token view will return a JSON response when valid username and password fields are POSTed to the view using form data or JSON. 
+
+{  token 7524dc17fe8433444278515f9622edf3d0b93c41 }
+
+It also generates token if the token is not generated for the provided user.
+
+
+pip install httpie 
+
+
+By exposing an API endpoint :==> 
+
+---------------------------------
+
+urls.py : 
+
+
+from django.contrib import admin
+from django.urls import path,include
+from rest_framework.routers import DefaultRouter
+from api import views
+from rest_framework.authtoken.views import obtain_auth_token
+
+router = DefaultRouter()
+
+router.register('porduct_api',views.ProductModelViewSet, basename='product')
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include(router.urls)),
+    path('auth/',include('rest_framework.urls',namespace='rest_framework')),
+    path('gettoken/',obtain_auth_token),
+]

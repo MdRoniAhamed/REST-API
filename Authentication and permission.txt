@@ -1,0 +1,144 @@
+
+														Why use Authentication & permission:
+														====================================
+
+Currently our API does'nt have any restrictions on who can edit or delete Data.We'd like to have some more advnced behavior in order to make sure that:
+
+* Data is always associated with a creator.
+* Only authenticated users may create Data.
+* Only the creator of a Data may update or delete it.
+* Unauthenticated requests  should have full read-only access.
+
+																	Authentication:
+														====================================
+
+Authentication is the mechanism of associationg an incoming request with a set of identifying credentials, such as the user the request came from, or the token that it was signed with. The permission and throttling policies can then use those credentials to determine if the request should be permitted.
+
+Authentication is always run at the very start of the view, before the permission and throttling checks occur, and before any other code is allowed to proceed.
+
+REST framework provides a number of authentication schemes out of the box, and also allows you to implement custom schemes. 
+
+* BasicAuthentication
+* SessionAuthentication
+* TokenAuthentication
+* RemoteUserAuthentication
+* custom authentication 
+
+
+																	Permission:
+														====================================
+
+Permission are used to grant or deny access for different classes of users to different parts of the API.
+
+Permission checks are always run at the very start of the view, before any other code is allowed to proceed.
+
+Permission checks will typically use the authentication information in teh request.user and request.auth properites to determine if the incoming request should be permitted.
+
+
+
+																permission Classes:
+														====================================
+
+Permissions in REST framework are always defined as a list of permission classes.
+
+* AllowAny
+* IsAuthenticated
+* IsAdminUser
+* IsAuthenticatedOrReadOnly
+* DjangoModelPermissions
+* DjangoModelPermissionsOrAnonReadOnly
+* DjangoObjectPermissions
+* Custom Permissions 
+
+
+Third Party Packages:- 
+----------------------
+
+* DRF - Access Plolicy
+* Composed Permissions 
+* REST Condition 
+* DRY Rest Permissions 
+* Django REST Framework Roles
+* Django REST Framework API Key
+* Django Rest Framework Role Filters
+* Django Rest Framewrok PSQ
+
+	AllowAny ==> 
+------------
+The AllowAn permission class will allow unrestricted access, regardless of if the request was authenticated or unauthenticated. 
+
+This permission is not strictly required, since you can achieve the same result by using an empty list or tuple for the permissions setting, but you may find it useful to specify this class because it makes the intention explict. 
+
+
+	IsAuthenticated ->
+--------------------
+
+The IsAuthenticated permission class will deny permission to any unauthenticated user, and allow permission otherwise. 
+This permission is sitable if you want your API to only be accessible to registered users. 
+
+
+
+	IsAdminUser ->
+--------------------
+
+The IsAdminUser permission class will deny permission to any user, unless user.is_staff is True in which case permission will be allowed. 
+This permission is suitabl eif you want your API to only be accessible to a subset of trusted administrators.
+
+
+
+
+	IsAuthenticatedOrReadOnly ->
+---------------------------------
+
+The IsAuthenticatedOrReadOnly will allow authenticated users to perform any request. Requests for unauthorised users will only be permitted if the request method is one of the "safe" methods; GET, HEAD or OPTIONS. 
+
+This permission is suitabl if you want to your API to allow read permissions to anonymous users, and only allow write permissions to authenticated users. 
+
+
+	DjangoModelPermissions ->
+-----------------------------
+
+This permission class ties into Django's standard django.contrib.auth model permissions. This permission must only be applied to views that have a queryset property set. Authorization will only be granted if the user is authenticated and has relevant model permissions assigned. 
+
+* POST request require the user to have the add permission on the model.
+* PUT and PATCH request require the user  to have teh change permission on the model.
+* DELETE request require the user to have the delete permission on teh model.
+
+The default behaviour can also be overridden to support custom model permissions. For example, you might want to include a view model permission for GET requests.
+
+To use custom model permissions, override DjangoModelPermissions and set the perms_map property.
+
+
+
+	DjangoModelPermissionsOrAnonReadOnly ->
+-------------------------------------------
+
+Similar to DjangoModelPermissions, but also allows unauthenticated users to have read-only access to the API.
+
+
+
+	DjangoObjectPermissions ->
+-----------------------------
+
+This permission class ties into Django's standard object permissions framework that allows per-object permissions on models. In order to use this permission class, you'll also need to add a permission backend that supports object-level permissions, such as django-guardian.
+
+As with DjangoModelPermissions, This permission must only be applied to views that have a queryset property or get_queryset() method. Authorization will only be granted if the user is authenticated and has the relevant per-object permissions and relevant model permissions assigned.
+
+* POST requests require the user to have the add permission on the model instance.
+* PUT and PATCH requests require the user to have the change permission on th emodel instance. 
+* DELETE requests require the user to have the delete permission on the model instance.
+
+
+														Global Use Authentication:
+														=========================
+
+Global Settings for Rest Framework - All view will be affected 
+Global Settings can be overrided by Local
+setting.py ::==> 
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':['rest_framework.authentication.BasicAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES':['rest_framework.permissions.IsAuthenticated'],
+}
+

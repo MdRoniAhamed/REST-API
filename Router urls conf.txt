@@ -1,0 +1,14 @@
+														 ViewSet - URL config:
+														========================
+
+from django.urls import path, include
+from api import views 
+from rest_framework.router import DefaultRouter
+
+router = DefaultRouter()  --> Createing Default Router Object
+
+router.register('sudentapi', views.StudentViewSet, basename = 'student') --> Register StudentViewSet with Router 
+
+urlpatterns = [
+path(",include(router.urls)), 
+] --> The Api URLs are now determined automatically by the router
