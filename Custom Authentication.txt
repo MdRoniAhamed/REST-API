@@ -1,0 +1,44 @@
+													Custom Authentication:
+													======================
+
+To implement a custom authentication scheme, subclass BaseAuthentication and override the authenticate(self, request) method.
+
+The method should return a two-tuple of (user, auth) if authentication succeeds, or None otherwise.
+
+
+custom_authentication.py ==>
+
+from django.contrib.auth.models import User
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+
+
+class CustomAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        username = request.GET.get('username')
+
+        if username is None:
+            return None
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise AuthenticationFailed("No Such User")
+        return (user,None)
+
+
+views.py ==> 
+
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import status
+from rest_framework import viewsets 
+from rest_framework.permissions import IsAuthenticated
+from .custom_auth import CustomAuthentication
+
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+

@@ -10,6 +10,11 @@ The methods should return True if the request should be granted access, and Fals
 
 custompermissions.py ==:=> 
 
+from rest_framework.permissions import BasePermission
+
 class MyPermission(BasePermission):
-	def has_permmission(self, request, view) 
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            return True
+        return False
 	

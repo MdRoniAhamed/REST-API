@@ -30,7 +30,7 @@ Note: If you use TokenAuthentication in production you must ensure that your API
 
 * Using Admin Application 
 * Using Django manage.py command
-	python manage.py drf_create_token<username> - This command will return API Token for the given user or Creates a Token if token doesn't exist for user.
+	python manage.py drf_create_token <username> - This command will return API Token for the given user or Creates a Token if token doesn't exist for user.
 * By exposing an API endpoint 
 * Using Signals
 
@@ -55,9 +55,13 @@ It also generates token if the token is not generated for the provided user.
 pip install httpie 
 
 
-By exposing an API endpoint :==> 
 
----------------------------------
+																	By exposing an API endpoint :==> 
+																	===============================
+
+First way:
+==========
+
 
 urls.py : 
 
@@ -78,3 +82,87 @@ urlpatterns = [
     path('auth/',include('rest_framework.urls',namespace='rest_framework')),
     path('gettoken/',obtain_auth_token),
 ]
+
+
+
+Second Way:
+=============													
+
+
+auth.py :==> 
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
+
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'Token': token.key,
+                         'user_id': user.pk,
+                         'email': user.email})
+
+
+urls.py :==> 
+
+from django.contrib import admin
+from django.urls import path,include
+from rest_framework.routers import DefaultRouter
+from api import views
+from api.auth import CustomAuthToken
+router = DefaultRouter()
+
+router.register('porduct_api',views.ProductModelViewSet, basename='product')
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include(router.urls)),
+    path('auth/',include('rest_framework.urls',namespace='rest_framework')),
+    path('gettoken/',CustomAuthToken.as_view()),
+]
+
+
+
+															Using Signals:
+															==============
+
+
+
+signals.py ==> 
+
+
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+		
+		
+
+views.py ==>
+
+
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import viewsets 
+from rest_framework.authentication import TokenAuthentication 
+from rest_framework.permissions import IsAuthenticated
+from . import signals
+
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+	
+	
+	

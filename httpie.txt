@@ -1,0 +1,25 @@
+													httpie
+													======
+
+HTTPie (pronounced aitch-tee-tee-pie) is command line HTTP client. Its goal is to make CLI interaction with web services as human-friendly as possible. It provides a simple http command that allows for sending arbitrary HTTp requests using a simple natural syntax, and displays colorized output. HTTPie can be used for testing, debugging, and generally interactiong with HTTP servers.
+
+Syntax:- http [flags] [METHOD] URL [ITEM [ITEM]]
+
+GET requests
+
+http http://127.0.0.1:8000/product_api/
+
+GET Request with Auth
+
+http http://127.0.0.1:8000/product_api/'Authorization:Token a969cc90bfc65f4a6178b8a794f19bf47c90b80c'
+
+POST Request/ Submitting Form 
+http -f POST http http://127.0.0.1:8000/product_api/ name=Clock price=3434 des=This_Clock'Authorization:Token a969cc90bfc65f4a6178b8a794f19bf47c90b80c'
+
+PUT Request
+
+http PUT http http://127.0.0.1:8000/product_api/3/ name=Clock price=3434 des=This_Clock'Authorization:Token a969cc90bfc65f4a6178b8a794f19bf47c90b80c'
+
+Delete Request
+
+http DELETE http http://127.0.0.1:8000/product_api/3/'Authorization:Token a969cc90bfc65f4a6178b8a794f19bf47c90b80c'
