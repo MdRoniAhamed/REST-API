@@ -54,7 +54,24 @@ Custom Permission in Django REST Framework : Completed.
 
 Authentication and Permission in Function Based View in Django REST Framework : completed.
 
-Token Authentication in Django REST Framework : 32 minute dekse.
+Token Authentication in Django REST Framework : Complete.
+
+Custom Authentication in Django REST Framework :complete.
+
+JSON Web Token and Simple JWT in Django REST Framework : complete.
+
+Throttling in Django REST Framework : completed
+
+Filtering and django filter in Django REST Framework : complete.
+
+Search Filter in Django REST Framework (Hindi): Complete.
+
+Ordering Filter in Django REST Framework (Hindi): Complete.
+
+Page Number Pagination in Django REST Framework (Hindi): 9.27 seconds.
+
+
+
 
 															APIView example:
 														========================

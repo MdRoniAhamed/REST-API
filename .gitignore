@@ -4,3 +4,4 @@ __init__.py
 *db.sqlit3 
 sqlit3
 database 
+env

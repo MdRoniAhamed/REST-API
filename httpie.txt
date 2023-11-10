@@ -5,6 +5,9 @@ HTTPie (pronounced aitch-tee-tee-pie) is command line HTTP client. Its goal is t
 
 Syntax:- http [flags] [METHOD] URL [ITEM [ITEM]]
 
+
+install : pip install httpie
+
 GET requests
 
 http http://127.0.0.1:8000/product_api/

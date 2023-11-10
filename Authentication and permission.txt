@@ -24,6 +24,19 @@ REST framework provides a number of authentication schemes out of the box, and a
 * RemoteUserAuthentication
 * custom authentication 
 
+Third party packages:-
+=======================
+
+* Django OAuth Toolkit
+* JSON Web Token Authentication
+* Hawk HTTP Authentication 
+* HTTP Signature Authentication 
+* Djoser
+* django-rest-auth / dj-rest-auth 
+* django-rest-framework-social-oauth2
+* django-rest-knox
+* drfpasswordless
+
 
 																	Permission:
 														====================================

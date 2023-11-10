@@ -1,0 +1,154 @@
+												JSON Web Token (JWT):
+												====================
+
+JSON Web Token is a fairly new standard which can be used for token-based authentication. Unlike the built-in TokenAuthentication scheme, JWT Authentication doesn't need to use a database to validate a token.
+
+https://jwt.io/
+
+													Simple JWT:	
+													===========
+
+Simple JWT provides a JSON Web Token authentication backend for the Django REST Framework. It aims to cover the most common use cases of JWTs by offering a conservative set of default features. It also aims to be easily extensible in case a desired feature is not present.
+
+https://django-rest-framework-simplejwt.readthedocs.io/en/latest/ 
+
+
+													How to Install Simple JWT:
+													==========================
+
+pip install djangorestframework-simplejwt
+
+
+													Configure Simple JWT:
+													=====================
+You can also include a route for Simple JWT's TokenVerifyView if you wish to allow API users to verify HMAC-signeed tokens without having access to your signing key.
+
+
+settings.py 
+============
+
+REST_FRAMEWORK = {
+	'DEFAULT_AUTHENTICATION_CLASSES':(
+		'rest_framerok_simplejwt.authentication.JWTAuthentication',
+	)}
+	
+
+urls.py :
+=========
+
+from rest-framework-simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
+urlpatterns = [
+	path('gettoken/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+	path('refreshtoken/', TokenRefreshView.as_view(), name='token_refresh'),
+	path('verifytoken/', TokenVerifyView.as_view(), name='token_verify'),
+	]
+	
+
+
+											JWT Default Settings:
+											=====================	
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+	'ROTATE_REFRESH_TOKENS': False,
+	'BALCKLIST_AFTER_ROTATION': True,
+	
+	'ALGORITHM':'HS256',
+	'SIGNING_KEY':settings.SECRET_KEY,
+	'VERIFYING_KEY': None,
+	'AUDIENCE': None,
+	'ISSUER':None, 
+	'AUTH_HEADER_TYPES':('Bearer',),
+	'USER_ID_FIELD':'id',
+	'USER_ID_CLAIM':'user_id',
+	
+	'AUTH_TOKEN_CLASSES':('rest_framework_simplejwt.tokens.AccessToken',),
+	'TOKEN_TYPE_CLAIM':'token_type',
+	
+	'JTI_CLAIM':'jit',
+	
+	'SLIDING_TOKEN_REFRESH_EXP_CLAIM':'refresh_exp',
+	'SLIDING_TOKEN_LIFETIME':timedelta(minutes=5),
+	'SLIDING_TOKEN_REFRESH_LIFETIME':timedelta(days=1),
+	
+	}
+	
+ACCESS_TOKEN_LIFETIME - A datetime.timedelta object which specifies how long access tokens are valid.
+
+REFRESH_TOKEN_LIFETIME - A datetime.timedelta object which specifies how long refresh tokens are valid.
+
+
+													Use JWT:
+													========
+GET Token:  
+==========
+
+http POST http://127.0.0.1:8000/gettoken/ username="admin" password="admin"
+
+
+Verify Token:
+==============
+
+http POST http://127.0.0.1:8000/verifytoken/ token="asldkdfjsdkjfslakddjflksdfjjkahdfkshfkhfjdhfkdjfhkldhfakshdflksdhfksdjhflakjsdfhslkjdhfslkdjfhalsdjfdfh"
+
+
+Refresh Token:
+==============
+
+http POST http://127.0.0.1:8000/refreshtoken/ refresh="asldkdfjsdkjfslakddjflksdfjjkahdfkshfkhfjdhfkdjfhkldhfakshdflksdhfksdjhflakjsdfhslkjdhfslkdjfhalsdjfdfh"
+
+
+
+Data Get:
+==========
+
+http http://127.0.0.1:8000/sudetapi/' Authorization: Bearer 9933b08199c62bcf9418ad846dd0e4bbdfc6ee4b'
+
+
+
+
+																					Example:
+																					=========
+
+views.py:
+=========
+
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework import status
+from rest_framework import viewsets 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+
+urls.py :
+=========
+
+from django.contrib import admin
+from django.urls import path,include
+from rest_framework.routers import DefaultRouter
+from api import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
+router = DefaultRouter()
+
+router.register('product_api',views.ProductModelViewSet, basename='product')
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include(router.urls)),
+    path('gettoken/',TokenObtainPairView.as_view()),
+    path('refreshtoken/',TokenRefreshView.as_view()),
+    path('verifytoken/', TokenVerifyView.as_view()),
+]
