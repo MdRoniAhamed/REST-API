@@ -54,24 +54,28 @@ Custom Permission in Django REST Framework : Completed.
 
 Authentication and Permission in Function Based View in Django REST Framework : completed.
 
-Token Authentication in Django REST Framework : Complete.
+Token Authentication in Django REST Framework : Completed.
 
-Custom Authentication in Django REST Framework :complete.
+Custom Authentication in Django REST Framework :completed.
 
-JSON Web Token and Simple JWT in Django REST Framework : complete.
+JSON Web Token and Simple JWT in Django REST Framework : completed.
 
 Throttling in Django REST Framework : completed
 
-Filtering and django filter in Django REST Framework : complete.
+Filtering and django filter in Django REST Framework : completed.
 
-Search Filter in Django REST Framework (Hindi): Complete.
+Search Filter in Django REST Framework (Hindi): Completed.
 
-Ordering Filter in Django REST Framework (Hindi): Complete.
+Ordering Filter in Django REST Framework (Hindi): Completed.
 
-Page Number Pagination in Django REST Framework (Hindi): 9.27 seconds.
+Page Number Pagination in Django REST Framework (Hindi): completed.
 
+Limit Offset Pagination in Django REST Framework (Hindi): Completed.
 
+Cursor Pagination in Django REST Framework (Hindi) : Completed.
 
+Serializer Relations in Django REST Framework (Hindi): completed.
 
-															APIView example:
-														========================
+Hyperlinked Model Serializer in Django REST Framework (Hindi): Complete.
+
+Nested Serializer in Django REST Framework (Hindi): Complete.

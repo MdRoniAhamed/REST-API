@@ -1,0 +1,9 @@
+															How to Disable Browsable API in Production:
+==========================================================================================================================================
+setting.py =>
+=============
+
+REST_FRAMEWORK = {
+	'DEFAULT_RENDERER_CLASSES':(rest_framework.renderers.JSONRenderer',)
+	}
+	

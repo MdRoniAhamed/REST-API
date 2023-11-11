@@ -1,4 +1,5 @@
-serializers: 
+																serializers: 
+===========================================================================================================================
 Serializers allow complex data such as querysets and model instances to be converted to native Python datatypes that can then be easily rendered into JSON, XML or other content types. Serializers also provide deserialization, allowing parsed data to be converted back into complex types, after first validating the incoming data.
 
 The serializers in REST framework work very similarly to Django's Form and ModelForm classes. We provide a Serializer class which gives you a powerful, generic way to control the output of your responses, as well as a ModelSerializer class which provides a useful shortcut for creating serializers that deal with model instances and querysets.
@@ -63,3 +64,231 @@ urlpatterns = [
     path('stuinfo/<int:pk>/',views.student_details),
     path('stuinfo/',views.student_list),
 ]
+
+
+		
+		
+														Serializer Relations:
+==================================================================================================================
+
+* view_name = 'related_name-detail'
+* slug_field = 'modelsFieldsname'
+
+
+
+    song = serializers.StringRelatedField(many=True, read_only=True)
+    song = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    song = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='song-detail')
+    song = serializers.HyperlinkedIdentityField( view_name='song-detail')
+    song = serializers.SlugRelatedField(many=True, read_only=True, slug_field='title')														
+
+
+
+														
+models.py :
+===========
+
+from django.db import models
+
+CATEGORY = (
+    ('male',"Male"),
+    ('girl',"Girl")
+)
+
+class Singer(models.Model):
+    name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=100,choices=CATEGORY)
+    def __str__(self):
+        return self.name
+
+class Song(models.Model):
+    title = models.CharField(max_length=300)
+    singer = models.ForeignKey(Singer, on_delete=models.CASCADE, related_name='song')
+    duration = models.FloatField()
+
+    def __str__(self):
+        return self.title
+		
+		
+serializers.py:==
+=================
+
+from .models import Singer, Song
+from rest_framework import serializers
+
+class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = "__all__"
+
+class SingerSerializer(serializers.ModelSerializer):
+    # song = serializers.StringRelatedField(many=True, read_only=True)
+    # song = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    # song = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='song-detail')
+    song = serializers.HyperlinkedIdentityField( view_name='song-detail')
+    # song = serializers.SlugRelatedField(many=True, read_only=True, slug_field='title')
+    class Meta:
+        model = Singer
+        fields = ['id','name','gender','song']
+
+
+views.py:
+=========
+
+from .serializers import Singer, Song, SingerSerializer, SongSerializer
+from rest_framework.viewsets import ModelViewSet
+
+class SongViewSet(ModelViewSet):
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
+
+class SingerViewSet(ModelViewSet):
+    queryset = Singer.objects.all()
+    serializer_class = SingerSerializer
+
+
+
+													ModelSerrializer Class
+=======================================================================================================================
+
+The ModelSerrializer class provides a shortcut that lets you automatically create a Serializer class with fields that correspond to the Model fields.
+
+The ModelSerrializer class is the same as a regular Serializer class, except that:
+
+1. It will automatically generate a set of fields for you, based on the model.
+2. It will automatically generate validators for the serializer, such as unique_together validators.
+3. It includes simple default implementaions for create() and update().
+
+								Create ModelSerrializer Class
+								=============================
+* Create a separate serializers.py file to write all serializers 
+
+from rest_framework import serializers 
+class StudentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Student
+		fields = ['id','name','roll','city']
+
+* fields = '__all__'
+* exclude = ['roll'] 
+
+
+
+=====
+from rest_framework import serializers
+class StudentSerializer(serializers.ModelSrializer):
+	name = serializers.CharField(read_only=True)
+	class Meta:
+		model = Student
+		fields = ['id','name','roll','city']
+		
+
+Or 
+
+from rest_framework import serializers
+class StudentSerializer(serializers.ModelSrializer):
+	class Meta:
+		model = Student
+		fields = ['id','name','roll','city']
+		read_only_fields = ['name','roll'] 
+		
+OR: 
+class StudentSerializer(serializers.ModelSerializer):
+    # name = serializers.CharField(read_only=True)
+    class Meta:
+        model = Student
+        fields = ['id','name','roll','city']
+        # read_only_fields = ['name','roll']
+        extra_kwargs = {'name':{'read_only':True}}
+		
+		
+								ModelSerrializer Validation
+								=============================
+* 
+from rest_framework import serializers
+from .models import Student
+
+def start_with_r(value):
+    if value.lower()[0] != 'r':
+        raise serializers.ValidationError("Nme Should be start with R")
+    
+class StudentSerializer(serializers.ModelSerializer):
+    # def start_with_r(value):
+    #     if value.lower()[0] != 'r':
+    #         raise serializers.ValidationError("Nme Should be start with R")
+    name = serializers.CharField(validators=[start_with_r])
+    class Meta:
+        model = Student
+        fields = ['name','roll','city']
+
+    def validate_roll(self, value):
+        if value>= 200:
+            raise serializers.ValidationError('Seat Full!!')
+        return value
+    
+    def validate(self, data):
+        nm = data.get('name')
+        ct = data.get('city')
+        if nm.lower() == 'roni' and ct.lower() != 'mymensingh':
+            raise serializers.ValidationError('City must be Mymensingh')
+        return data
+		
+		
+
+
+													HyperlinkModelSerializer:
+=====================================================================================================================================
+from .models import Student
+from rest_framework import serializers
+
+class StudentSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id','url','name','city','roll']
+
+
+
+													Nested Serializer:
+=====================================================================================================================================
+
+serializers.py:
+==============
+
+from .models import Singer, Song
+from rest_framework import serializers
+
+class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = "__all__"
+
+class SingerSerializer(serializers.ModelSerializer):
+    songby = SongSerializer(many=True, read_only=True)
+    class Meta:
+        model = Singer
+        fields = ['id','name','gender','songby']
+
+
+models.py :
+==============
+
+from django.db import models
+
+CATEGORY = (
+    ('male',"Male"),
+    ('girl',"Girl")
+)
+
+class Singer(models.Model):
+    name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=100,choices=CATEGORY)
+    def __str__(self):
+        return self.name
+
+class Song(models.Model):
+    title = models.CharField(max_length=300)
+    singer = models.ForeignKey(Singer, on_delete=models.CASCADE, related_name='songby')
+    duration = models.FloatField()
+
+    def __str__(self):
+        return self.title
